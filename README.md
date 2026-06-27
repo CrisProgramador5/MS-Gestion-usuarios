@@ -2,8 +2,8 @@
 
 ## Integrantes
 
-* Francisca Acosta
-* Cristobal Garcia
+* Francisca Acosta.
+* Cristobal Garcia.
 
 ---
 
