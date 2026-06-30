@@ -29,7 +29,7 @@ spec:
 
           env:
             - name: SPRING_DATASOURCE_URL
-              value: "jdbc:mysql://db.cv2ssgqaw2hn.us-east-1.rds.amazonaws.com:3306/gestionusuarios"
+              value: "jdbc:mysql://gestion-db.cy9mdiqbv1zz.us-east-1.rds.amazonaws.com:3306/gestionusuarios"
 
             - name: SPRING_DATASOURCE_USERNAME
               value: "admin"
