@@ -3,6 +3,7 @@ kind: Deployment
 
 metadata:
   name: gestionusuarios-deployment
+  namespace: microservices-demo
 
 spec:
   replicas: 2
@@ -29,6 +30,7 @@ spec:
 
           env:
             - name: SPRING_DATASOURCE_URL
+
               value: "jdbc:mysql://gestion-db.cy9mdiqbv1zz.us-east-1.rds.amazonaws.com:3306/gestionusuarios"
 
             - name: SPRING_DATASOURCE_USERNAME

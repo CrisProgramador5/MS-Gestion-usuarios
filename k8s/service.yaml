@@ -3,6 +3,7 @@ kind: Service
 
 metadata:
   name: gestionusuarios-service
+  namespace: microservices-demo
 
 spec:
   type: LoadBalancer
