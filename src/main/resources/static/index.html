@@ -2,56 +2,136 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Gestión de Usuarios</title>
 
 <style>
 
 body{
     font-family: Arial, Helvetica, sans-serif;
-    background:#f5f5f5;
-    margin:40px;
+    background:#f4f6f8;
+    margin:0;
+    padding:30px;
+}
+
+.container{
+    max-width:950px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,.15);
 }
 
 h1{
     text-align:center;
-    color:#1976d2;
+    color:#1f4e79;
+    margin-bottom:5px;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    background:white;
-    margin-top:20px;
-}
-
-th{
-    background:#1976d2;
-    color:white;
-    padding:12px;
-}
-
-td{
-    padding:10px;
-    border-bottom:1px solid #ddd;
+h3{
     text-align:center;
+    color:#666;
+    margin-top:0;
+    margin-bottom:30px;
 }
 
-tr:hover{
-    background:#f1f1f1;
+.formulario{
+    display:grid;
+    grid-template-columns:1fr 1fr 120px;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+input{
+    padding:10px;
+    font-size:15px;
+    border-radius:6px;
+    border:1px solid #bbb;
+}
+
+.botones{
+    margin-bottom:20px;
 }
 
 button{
-    margin-top:20px;
+
     padding:10px 18px;
-    background:#1976d2;
-    color:white;
+    margin-right:10px;
     border:none;
     border-radius:6px;
     cursor:pointer;
+    font-size:15px;
+
+}
+
+.agregar{
+
+    background:#198754;
+    color:white;
+
+}
+
+.actualizar{
+
+    background:#0d6efd;
+    color:white;
+
 }
 
 button:hover{
-    background:#125ea7;
+
+    opacity:.9;
+
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+th{
+
+    background:#1f4e79;
+    color:white;
+    padding:12px;
+
+}
+
+td{
+
+    padding:10px;
+    border-bottom:1px solid #ddd;
+
+}
+
+tr:nth-child(even){
+
+    background:#f8f8f8;
+
+}
+
+#mensaje{
+
+    margin-bottom:20px;
+    font-weight:bold;
+    text-align:center;
+
+}
+
+.ok{
+
+    color:green;
+
+}
+
+.error{
+
+    color:red;
+
 }
 
 </style>
@@ -60,21 +140,61 @@ button:hover{
 
 <body>
 
+<div class="container">
+
 <h1>Gestión de Usuarios</h1>
 
-<button onclick="cargarUsuarios()">
-Actualizar usuarios
+<div id="mensaje"></div>
+
+<div class="formulario">
+
+<input
+id="nombre"
+placeholder="Nombre">
+
+<input
+id="correo"
+placeholder="Correo">
+
+<input
+id="edad"
+type="number"
+placeholder="Edad">
+
+</div>
+
+<div class="botones">
+
+<button
+class="agregar"
+onclick="agregarUsuario()">
+
+Agregar usuario
+
 </button>
+
+<button
+class="actualizar"
+onclick="cargarUsuarios()">
+
+Actualizar usuarios
+
+</button>
+
+</div>
 
 <table>
 
 <thead>
 
 <tr>
-<th>ID</th>
+
 <th>Nombre</th>
+
 <th>Correo</th>
+
 <th>Edad</th>
+
 </tr>
 
 </thead>
@@ -85,37 +205,117 @@ Actualizar usuarios
 
 </table>
 
+</div>
+
 <script>
+
+const API="/usuarios";
+
+window.onload=cargarUsuarios;
 
 async function cargarUsuarios(){
 
-    const respuesta = await fetch("/usuarios");
+    const respuesta=await fetch(API);
 
-    const usuarios = await respuesta.json();
+    const usuarios=await respuesta.json();
 
-    let filas = "";
+    let tabla=document.getElementById("tablaUsuarios");
 
-    usuarios.forEach(usuario =>{
+    tabla.innerHTML="";
 
-        filas += `
+    usuarios.forEach(usuario=>{
+
+        tabla.innerHTML+=`
+
         <tr>
-            <td>${usuario.id}</td>
-            <td>${usuario.nombre}</td>
-            <td>${usuario.correo}</td>
-            <td>${usuario.edad}</td>
+
+        <td>${usuario.nombre}</td>
+
+        <td>${usuario.correo}</td>
+
+        <td>${usuario.edad}</td>
+
         </tr>
+
         `;
 
     });
 
-    document.getElementById("tablaUsuarios").innerHTML = filas;
-
 }
 
-cargarUsuarios();
+async function agregarUsuario(){
+
+    let nombre=document.getElementById("nombre").value.trim();
+
+    let correo=document.getElementById("correo").value.trim();
+
+    let edad=document.getElementById("edad").value;
+
+    let mensaje=document.getElementById("mensaje");
+
+    if(nombre=="" || correo=="" || edad==""){
+
+        mensaje.className="error";
+
+        mensaje.innerHTML="⚠ Complete todos los campos.";
+
+        return;
+
+    }
+
+    const usuario={
+
+        nombre:nombre,
+        correo:correo,
+        edad:Number(edad)
+
+    };
+
+    const respuesta=await fetch(API,{
+
+        method:"POST",
+
+        headers:{
+
+            "Content-Type":"application/json"
+
+        },
+
+        body:JSON.stringify(usuario)
+
+    });
+
+    if(respuesta.ok){
+
+        mensaje.className="ok";
+
+        mensaje.innerHTML="✅ Usuario agregado correctamente.";
+
+        document.getElementById("nombre").value="";
+        document.getElementById("correo").value="";
+        document.getElementById("edad").value="";
+
+        cargarUsuarios();
+
+        setTimeout(()=>{
+
+            mensaje.innerHTML="";
+
+        },3000);
+
+    }
+
+    else{
+
+        mensaje.className="error";
+
+        mensaje.innerHTML="❌ No fue posible guardar el usuario.";
+
+    }
+
+}
 
 </script>
 
 </body>
-
 </html>
