@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Gestión de Usuarios</title>
+
+<style>
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f5f5f5;
+    margin:40px;
+}
+
+h1{
+    text-align:center;
+    color:#1976d2;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    margin-top:20px;
+}
+
+th{
+    background:#1976d2;
+    color:white;
+    padding:12px;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+tr:hover{
+    background:#f1f1f1;
+}
+
+button{
+    margin-top:20px;
+    padding:10px 18px;
+    background:#1976d2;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#125ea7;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Gestión de Usuarios</h1>
+
+<button onclick="cargarUsuarios()">
+Actualizar usuarios
+</button>
+
+<table>
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>Nombre</th>
+<th>Correo</th>
+<th>Edad</th>
+</tr>
+
+</thead>
+
+<tbody id="tablaUsuarios">
+
+</tbody>
+
+</table>
+
+<script>
+
+async function cargarUsuarios(){
+
+    const respuesta = await fetch("/usuarios");
+
+    const usuarios = await respuesta.json();
+
+    let filas = "";
+
+    usuarios.forEach(usuario =>{
+
+        filas += `
+        <tr>
+            <td>${usuario.id}</td>
+            <td>${usuario.nombre}</td>
+            <td>${usuario.correo}</td>
+            <td>${usuario.edad}</td>
+        </tr>
+        `;
+
+    });
+
+    document.getElementById("tablaUsuarios").innerHTML = filas;
+
+}
+
+cargarUsuarios();
+
+</script>
+
+</body>
+
+</html>
