@@ -130,14 +130,14 @@ jobs:
 
       - name: Build Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/gestionusuarios:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/gestionusuarios:${{ github.sha }} .
 
       - name: Push Image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/gestionusuarios:latest
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/gestionusuarios:${{ github.sha }}
           
 # =========================
-# 5. DEPLOY TO AMAZON EKS
+# 6. DEPLOY TO AMAZON EKS
 # =========================
 
   deploy:
@@ -173,13 +173,11 @@ jobs:
         run: |
           kubectl get nodes
 
-      - name: Wait Docker Hub 
-        run: sleep 30
-
-      - name: Restart Deployment
-        run: |
-          kubectl rollout restart deployment/gestionusuarios-deployment \
-            -n microservices-demo
+      - name: Update Deployment Image
+  run: |
+    kubectl set image deployment/gestionusuarios-deployment \
+      gestionusuarios=${{ secrets.DOCKER_USERNAME }}/gestionusuarios:${{ github.sha }} \
+      -n microservices-demo
 
       - name: Wait for rollout
         run: |
