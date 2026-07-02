@@ -20,9 +20,7 @@ spec:
     spec:
       containers:
         - name: gestionusuarios
-
           image: pankuki/gestionusuarios:latest
-
           imagePullPolicy: Always
 
           ports:
