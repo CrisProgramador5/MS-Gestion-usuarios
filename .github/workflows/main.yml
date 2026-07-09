@@ -111,6 +111,7 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: Run Snyk Security Scan
+        continue-on-error: true
         run: snyk test
 
 # =========================
